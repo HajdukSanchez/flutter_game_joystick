@@ -1,14 +1,16 @@
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
+import 'package:flame/input.dart';
 import 'package:flame/palette.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
+import '/components/bullet.dart';
 import '/components/joystick_player.dart';
 import '/constants/constants.dart';
 
 /// Game class to handle Joystick and move some components in the screen
-class JoystickGame extends FlameGame with HasDraggables {
+class JoystickGame extends FlameGame with HasDraggables, HasTappables {
   /// PLayer to handle with [joystick]
   late final JoystickPlayer player;
 
@@ -33,6 +35,20 @@ class JoystickGame extends FlameGame with HasDraggables {
 
     // Add player and joystick to the game
     addAll([player, joystick]);
+  }
+
+  @override
+  void onTapUp(int pointerId, TapUpInfo info) {
+    super.onTapUp(pointerId, info);
+
+    // Create a vector in position 0 radians
+    var velocity = Vector2(0, -1);
+    // Move the vector to the specific player angle, in order to pass this velocity
+    // angle to the bullet
+    // In this case, the player angle is when the ship axis is
+    velocity.rotate(player.angle);
+    // Add bullet on the screen starting from user location and specific vector direction
+    add(Bullet(player.position, velocity));
   }
 
   // Set joystick position on the screen based on handed of user
