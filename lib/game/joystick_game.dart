@@ -8,6 +8,7 @@ import 'package:flutter/rendering.dart';
 import '/components/bullet.dart';
 import '/components/joystick_player.dart';
 import '/constants/constants.dart';
+import '/utils/utils.dart';
 
 /// Game class to handle Joystick and move some components in the screen
 class JoystickGame extends FlameGame with HasDraggables, HasTappables {
@@ -66,7 +67,9 @@ class JoystickGame extends FlameGame with HasDraggables, HasTappables {
     for (var element in children) {
       if (element is Bullet) {
         // Validate if the bullet needs to be removed from memory
-        if (_componentIsOutBoundaries(element)) remove(element);
+        if (Utils.componentIsOutBoundaries(component: element, size: size)) {
+          remove(element);
+        }
       }
     }
   }
@@ -102,24 +105,11 @@ class JoystickGame extends FlameGame with HasDraggables, HasTappables {
     }
   }
 
-  // Validate if the bullet element when it is go out of the screen boundaries
-  bool _componentIsOutBoundaries(PositionComponent component) {
-    if (component.position.x > size.x ||
-        component.position.x < 0 ||
-        component.position.y > size.y ||
-        component.position.y < 0) {
-      return true;
-    }
-    return false;
-  }
-
   // Get the amount of bullets on memory
   int _getBulletsOnMemory() {
     int amount = 0;
     for (var element in children) {
-      if (element is Bullet) {
-        amount++;
-      }
+      if (element is Bullet) amount++;
     }
     return amount;
   }
