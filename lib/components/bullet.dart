@@ -1,9 +1,11 @@
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 
+import '/game/joystick_game.dart';
+
 /// Class that represent a bullet shooting by spaceship each time
 /// user touch the screen (outside from the joystick component)
-class Bullet extends PositionComponent {
+class Bullet extends PositionComponent with HasGameRef<JoystickGame> {
   // Default color of the bullet
   static final _bulletColor = Paint()..color = Colors.white;
   // Default bullet speed on shoot

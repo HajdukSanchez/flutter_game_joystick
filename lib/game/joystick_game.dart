@@ -17,6 +17,14 @@ class JoystickGame extends FlameGame with HasDraggables, HasTappables {
   /// Joystick component
   late final JoystickComponent joystick;
 
+  /// Text rendering default style
+  final textPaint = TextPaint(
+    style: const TextStyle(
+      fontSize: 14,
+      fontFamily: 'Awesome Font',
+    ),
+  );
+
   @override
   Future<void>? onLoad() async {
     await super.onLoad();
@@ -51,6 +59,30 @@ class JoystickGame extends FlameGame with HasDraggables, HasTappables {
     add(Bullet(player.position, velocity));
   }
 
+  @override
+  void update(double dt) {
+    super.update(dt);
+
+    for (var element in children) {
+      if (element is Bullet) {
+        // Validate if the bullet needs to be removed from memory
+        if (_componentIsOutBoundaries(element)) remove(element);
+      }
+    }
+  }
+
+  @override
+  void render(Canvas canvas) {
+    super.render(canvas);
+
+    // Update bullets amount
+    textPaint.render(
+      canvas,
+      'Active bullets: ${_getBulletsOnMemory()}',
+      Vector2(20, 50),
+    );
+  }
+
   // Set joystick position on the screen based on handed of user
   EdgeInsets _setJoyStickPosition(JoystickDirectionType handedPlayer) {
     // Default bottom margin
@@ -68,5 +100,27 @@ class JoystickGame extends FlameGame with HasDraggables, HasTappables {
           right: JoystickDirectionType.rightHanded.rightMargin,
         );
     }
+  }
+
+  // Validate if the bullet element when it is go out of the screen boundaries
+  bool _componentIsOutBoundaries(PositionComponent component) {
+    if (component.position.x > size.x ||
+        component.position.x < 0 ||
+        component.position.y > size.y ||
+        component.position.y < 0) {
+      return true;
+    }
+    return false;
+  }
+
+  // Get the amount of bullets on memory
+  int _getBulletsOnMemory() {
+    int amount = 0;
+    for (var element in children) {
+      if (element is Bullet) {
+        amount++;
+      }
+    }
+    return amount;
   }
 }
