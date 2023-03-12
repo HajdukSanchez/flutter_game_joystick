@@ -1,7 +1,9 @@
+import 'package:case_study_02/constants/audio_constants.dart';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame/input.dart';
 import 'package:flame/palette.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -44,6 +46,8 @@ class JoystickGame extends FlameGame with HasDraggables, HasTappables {
 
     // Add player and joystick to the game
     addAll([player, joystick]);
+
+    _startBackgroundMusic();
   }
 
   @override
@@ -68,7 +72,10 @@ class JoystickGame extends FlameGame with HasDraggables, HasTappables {
       if (element is Bullet) {
         // Validate if the bullet needs to be removed from memory
         if (Utils.componentIsOutBoundaries(component: element, size: size)) {
+          // Remove Bullet
           remove(element);
+          // Play hit sound on out boundaries
+          FlameAudio.play(AudioConstants.bulletHitAudio);
         }
       }
     }
@@ -112,5 +119,13 @@ class JoystickGame extends FlameGame with HasDraggables, HasTappables {
       if (element is Bullet) amount++;
     }
     return amount;
+  }
+
+  // Start playing background music effect
+  void _startBackgroundMusic() {
+    // Initialize background music
+    FlameAudio.bgm.initialize();
+    // Start playing
+    FlameAudio.bgm.play(AudioConstants.bgMusicAudio);
   }
 }
